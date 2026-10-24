@@ -6,18 +6,14 @@ from PIL import Image
 from streamlit_drawable_canvas import st_canvas
 import os
 
-st.set_page_config(
-    page_title="Detector de Dígitos MNIST",
-    page_icon="✍️",
-    layout="wide"
-)
+from aurora import app_header, footer
+app_header()
 
 # Mostrar versión en sidebar
 with st.sidebar:
     st.write(f"**TensorFlow:** {tf.__version__}")
     st.write(f"**Keras:** {keras.__version__}")
 
-st.title("✍️ Detección de Dígitos Escritos a Mano")
 st.markdown("**Modelo CNN entrenado en Google Colab con MNIST**")
 
 # Cargar modelo
@@ -32,7 +28,7 @@ def load_mnist_model():
         if os.path.exists(model_path):
             try:
                 st.info(f"📂 Intentando cargar: {model_path}")
-                model = keras.models.load_model(model_path)
+                model = keras.models.load_model(model_path, compile=False)
                 st.success(f"✅ Modelo cargado exitosamente desde: `{model_path}`")
                 return model
             except Exception as e:
@@ -56,7 +52,9 @@ model = load_mnist_model()
 # Interfaz
 st.write("### 🎨 Dibuja un dígito del 0 al 9")
 
-col1, col2 = st.columns([2, 1])
+if 'mnist_canvas_id' not in st.session_state:
+    st.session_state.mnist_canvas_id = 0
+col1, col2 = st.columns([1, 1])
 
 with col1:
     canvas_result = st_canvas(
@@ -64,10 +62,10 @@ with col1:
         stroke_width=20,
         stroke_color="white",
         background_color="black",
-        width=400,
-        height=400,
+        width=320,
+        height=320,
         drawing_mode="freedraw",
-        key="canvas",
+        key=f"canvas_{st.session_state.mnist_canvas_id}",
     )
 
 with col2:
@@ -76,12 +74,13 @@ with col2:
     clear_btn = st.button("🗑️ Limpiar", use_container_width=True)
     
     if clear_btn:
+        st.session_state.mnist_canvas_id += 1
         st.rerun()
 
 # Predicción
 if predict_btn:
     if canvas_result.image_data is not None:
-        if np.max(canvas_result.image_data) == 0:
+        if not canvas_result.json_data or not canvas_result.json_data.get('objects') or np.max(canvas_result.image_data[:, :, :3]) <= 5:
             st.warning("⚠️ Por favor, dibuja un dígito primero")
         else:
             with st.spinner("🤔 Analizando..."):
@@ -138,4 +137,6 @@ if predict_btn:
                     st.write(f"{emoji} **Dígito {i}**: {prob*100:.2f}%")
     else:
         st.warning("⚠️ Por favor, dibuja un dígito en el canvas")
+
+footer("TRAZAR / RECONOCER / COMPARAR")
 
