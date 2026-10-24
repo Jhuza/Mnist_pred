@@ -1,0 +1,18 @@
+{
+  "slug": "Mnist_pred",
+  "entry": "Inicio.py",
+  "title": "Dígitos escritos a mano",
+  "category": "Dibujo",
+  "headline": "Un trazo.",
+  "accent": "Un número.",
+  "description": "Dibuja un dígito y observa cómo lo interpreta una red neuronal entrenada con MNIST.",
+  "input": "Un dígito del 0 al 9 dibujado sobre el tablero.",
+  "output": "Dígito predicho, probabilidades y vista de la entrada reducida a 28 × 28 píxeles.",
+  "steps": "Dibuja un número blanco sobre el fondo negro y pulsa Predecir. Usa Limpiar para probar otro trazo.",
+  "technology": "MNIST · CNN · TensorFlow / Keras",
+  "limits": "Reconoce dígitos aislados, no palabras. La confianza es la puntuación del modelo y puede ser alta aunque se equivoque.",
+  "url": "https://mnistpred-hkkxpjbqcq3bsy8usncy5x.streamlit.app/",
+  "repo": "https://github.com/Jhuza/Mnist_pred",
+  "image": "OIG3.jpg",
+  "kind": "vision"
+}
